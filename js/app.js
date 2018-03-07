@@ -1,6 +1,8 @@
 /*
  * Create a list that holds all of your cards
  */
+const cardArray = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb",
+               "fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
 
 
 /*
@@ -33,6 +35,25 @@ function setEventListeners() {
       $(this).addClass("open show");
   });
 }
+
+function generateHtml(cardArray) {
+  let output = "";
+  for(const card of cardArray) {
+    output = `${output}
+<li class="card">
+  <i class="fa ${card}"></i>
+</li>`;
+  }
+  return output;
+}
+
+
+$(function() {
+    $(".deck li").remove();
+    $(".deck").append(generateHtml(shuffle(cardArray)));
+    console.log(generateHtml(cardArray));
+  }
+);
 
 $(setEventListeners);
 
