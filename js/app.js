@@ -25,6 +25,16 @@ function shuffle(array) {
     return array;
 }
 
+function setEventListeners() {
+  $(".card").click(function(event) {
+    if($(this).hasClass("open"))
+      $(this).removeClass("open show");
+    else
+      $(this).addClass("open show");
+  });
+}
+
+$(setEventListeners);
 
 /*
  * set up the event listener for a card. If a card is clicked:
