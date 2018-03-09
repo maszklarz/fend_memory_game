@@ -3,8 +3,9 @@
  */
 const cardArray = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb",
                "fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
-
-
+let openCardArray = [];
+let latestOddCard;
+let latestEvenCard;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -27,12 +28,68 @@ function shuffle(array) {
     return array;
 }
 
+function addToOpenCardArray(cardSymbol) {
+  openCardArray.push(cardSymbol);
+}
+
+function removeLastTwoCardsFromOpenCardArray() {
+  openCardArray.splice(openCardArray.length-2, 2);
+}
+
+function openCard(cardObject) {
+  cardObject.addClass("open show");
+}
+
+function closeCard(cardObject) {
+    cardObject.removeClass("open show");
+}
+
+// assume openCardArray has even number of elements
+function areLatestCardsTheSame(openCardArray) {
+  if(openCardArray[openCardArray.length -1] === openCardArray[openCardArray.length -2]) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isGameOver() {
+  if(openCardArray.length === cardArray.length) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 function setEventListeners() {
   $(".card").click(function(event) {
-    if($(this).hasClass("open"))
-      $(this).removeClass("open show");
-    else
-      $(this).addClass("open show");
+    // ignore click if unmatching cards are open
+    if (latestEvenCard !== undefined)
+      return;
+    // ignore click on open card
+    if ($(this).hasClass("open"))
+      return;
+    openCard( $(this) );
+    addToOpenCardArray($(this).children(".fa")[0].classList[1]);
+    if(openCardArray.length % 2 === 0) {
+      if(areLatestCardsTheSame(openCardArray)) {
+        if(isGameOver())
+          alert("Game Over");
+      }
+      else {
+        latestEvenCard = $(this);
+        setTimeout(function(){
+          closeCard(latestEvenCard);
+          closeCard(latestOddCard);
+          latestEvenCard = undefined; // stop ignoring clicks
+        }, 1000);
+        removeLastTwoCardsFromOpenCardArray();
+      }
+    }
+    else {
+      latestOddCard = $(this);
+    }
   });
 }
 
@@ -46,7 +103,6 @@ function generateHtml(cardArray) {
   }
   return output;
 }
-
 
 $(function() {
     $(".deck li").remove();
