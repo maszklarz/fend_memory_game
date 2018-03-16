@@ -6,6 +6,10 @@ const cardArray = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa
 let openCardArray = [];
 let latestOddCard;
 let latestEvenCard;
+let clickCounter = 0;
+let moveCounter = 0;
+
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -24,7 +28,6 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
 }
 
@@ -45,6 +48,7 @@ function closeCard(cardObject) {
 }
 
 // assume openCardArray has even number of elements
+// the caller takes care about it
 function areLatestCardsTheSame(openCardArray) {
   if(openCardArray[openCardArray.length -1] === openCardArray[openCardArray.length -2]) {
     return true;
@@ -62,7 +66,8 @@ function isGameOver() {
   }
 }
 
-function setEventListeners() {
+function setEventListenersForAGame() {
+  // these event listeners are recreated on each game
   $(".card").click(function(event) {
     // ignore click if unmatching cards are open
     if (latestEvenCard !== undefined)
@@ -73,9 +78,15 @@ function setEventListeners() {
     openCard( $(this) );
     addToOpenCardArray($(this).children(".fa")[0].classList[1]);
     if(openCardArray.length % 2 === 0) {
+      moveCounter++;
+      $(".moves").html(moveCounter); // display moveCounter on board
       if(areLatestCardsTheSame(openCardArray)) {
-        if(isGameOver())
-          alert("Game Over");
+        if(isGameOver()) {
+          setTimeout( function() {
+            alert("Game Over! Move count: " + moveCounter);
+            startGame();
+          }, 1000);
+        }
       }
       else {
         latestEvenCard = $(this);
@@ -90,6 +101,8 @@ function setEventListeners() {
     else {
       latestOddCard = $(this);
     }
+    // calculate star count based on move count and redraw the stars
+    drawStars( moveCounter <= 15 ? 3 : (moveCounter <= 25 ? 2 : 1) );
   });
 }
 
@@ -104,14 +117,38 @@ function generateHtml(cardArray) {
   return output;
 }
 
+function startGame() {
+  // clear board
+  $(".deck li").remove();
+  // add cards to the board
+  $(".deck").append(generateHtml(shuffle(cardArray)));
+  setEventListenersForAGame();
+  moveCounter = 0;
+  $(".moves").html(moveCounter); // display moveCounter on board
+}
+
+function setEventListenersForAPage() {
+  // set event listeners on html elements that are no deleted on new game
+  $(".restart").click(function(event) {
+    if(confirm("Start new game?"))
+      startGame();
+  });
+}
+
+function drawStars(starCount) {
+  $(".stars li").remove();
+  for(; starCount > 0; starCount--)
+    $(".stars").append("<li><i class='fa fa-star'></i></li>");
+}
+
+// initialize page and start the very first game
 $(function() {
-    $(".deck li").remove();
-    $(".deck").append(generateHtml(shuffle(cardArray)));
-    console.log(generateHtml(cardArray));
+  setEventListenersForAPage();
+  startGame();
   }
 );
 
-$(setEventListeners);
+
 
 /*
  * set up the event listener for a card. If a card is clicked:
