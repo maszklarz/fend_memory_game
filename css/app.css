@@ -37,23 +37,29 @@ h1 {
  * Styles for the deck of cards
  */
 
-.deck {
-    width: 660px;
-    min-height: 680px;
-    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
+ .deck {
+    max-width: 640px;
+    width: 100%;
+    flex: 0 0 22%;
+    padding: 8% 0;
     padding: 32px;
+    margin: 2% 0;
+    margin: 0 0 3em;
+    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
     border-radius: 10px;
     box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 3em;
-}
+ }
 
 .deck .card {
-    height: 125px;
-    width: 125px;
+    height: 23px;
+    width: 21px;
+    flex: 0 0 21%;
+    padding: 10% 0;
+    margin: 2% 0;
     background: #2e3d49;
     font-size: 0;
     color: #ffffff;
@@ -64,7 +70,8 @@ h1 {
     align-items: center;
     box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
     transition: 0.5s ease-in-out;
-}
+ }
+
 
 .deck .card.open {
     transform: rotateY(0.5turn);
@@ -87,17 +94,24 @@ h1 {
  * Styles for the Score Panel
  */
 
-.score-panel {
+ .score-panel {
     text-align: left;
-    width: 345px;
+    width: 100%;
+    max-width: 640px;
     margin-bottom: 10px;
-}
+    font-size: 32px;
+    display: flex;
+    flex-wrap: wrap;
+ }
 
 .score-panel .stars {
     margin: 0;
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
+    color: #FFD700;
+    width: 25%;
+    max-width: 160px;
 }
 
 .score-panel .stars li {
@@ -105,7 +119,30 @@ h1 {
     display: inline-block;
 }
 
-.score-panel .restart {
-    float: right;
+.move-text {
+    width: 25%;
+}
+
+.timer {
+    width: 30%;
+    max-width: 160px;
+}
+
+.restart {
+    margin-left: auto;
     cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 16px;
+  }
+
+  .score-panel {
+    font-size: 16px;
+  }
+
+  .deck .card.show {
+    font-size: 16px;
+  }
 }

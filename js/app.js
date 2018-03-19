@@ -8,6 +8,8 @@ let latestOddCard;
 let latestEvenCard;
 let clickCounter = 0;
 let moveCounter = 0;
+let startGameDate;
+let timeEndGame;
 
 
 /*
@@ -66,8 +68,16 @@ function isGameOver() {
   }
 }
 
+// these event listeners are on html elements that are not deleted on new game
+function setEventListenersForAPage() {
+  $(".restart").click(function(event) {
+    if(confirm("Start new game?"))
+      startGame();
+  });
+}
+
+// these event listeners need to be recreated on each game
 function setEventListenersForAGame() {
-  // these event listeners are recreated on each game
   $(".card").click(function(event) {
     // ignore click if unmatching cards are open
     if (latestEvenCard !== undefined)
@@ -75,25 +85,33 @@ function setEventListenersForAGame() {
     // ignore click on open card
     if ($(this).hasClass("open"))
       return;
-    openCard( $(this) );
+    // at this point we know the click is valid and needs to be processed
+    openCard($(this));
     addToOpenCardArray($(this).children(".fa")[0].classList[1]);
     if(openCardArray.length % 2 === 0) {
       moveCounter++;
-      $(".moves").html(moveCounter); // display moveCounter on board
+      // display moveCounter on board
+      $(".moves").html(moveCounter);
       if(areLatestCardsTheSame(openCardArray)) {
         if(isGameOver()) {
-          setTimeout( function() {
-            alert("Game Over! Move count: " + moveCounter);
+          timeEndGame = getCurrentTimeInterval();
+          // display end-of-game modal with slight delay
+          // to let card animations finish
+          setTimeout(function() {
+            alert("Congratulations! You won in "+  moveCounter + " moves. Your time is " + timeEndGame + ". Your star rating is " + movesStars(moveCounter) + ". Do you want to start a new game?");
             startGame();
           }, 1000);
         }
       }
       else {
         latestEvenCard = $(this);
+        // close two latest cards with slight delay
+        // so the player can acknowledge they are different
         setTimeout(function(){
           closeCard(latestEvenCard);
           closeCard(latestOddCard);
-          latestEvenCard = undefined; // stop ignoring clicks
+          // stop ignoring clicks
+          latestEvenCard = undefined;
         }, 1000);
         removeLastTwoCardsFromOpenCardArray();
       }
@@ -102,10 +120,41 @@ function setEventListenersForAGame() {
       latestOddCard = $(this);
     }
     // calculate star count based on move count and redraw the stars
-    drawStars( moveCounter <= 15 ? 3 : (moveCounter <= 25 ? 2 : 1) );
+    drawStars(movesStars(moveCounter));
   });
 }
 
+// convert move count to star count
+function movesStars(moveCounter) {
+  return moveCounter <= 15 ? 3 : (moveCounter <= 25 ? 2 : 1);
+}
+
+// Get time interval between begin of game and current time
+function getCurrentTimeInterval() {
+  const now = new Date().getTime();
+  const timeDiff = now - startGameDate;
+  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  return (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+}
+
+// display the timer
+function updateTime() {
+  $(".time").html(getCurrentTimeInterval());
+}
+
+// reset the timer
+function startTime() {
+  startGameDate = new Date().getTime();
+}
+
+function drawStars(starCount) {
+  $(".stars li").remove();
+  for(; starCount > 0; starCount--)
+    $(".stars").append("<li><i class='fa fa-star'></i></li>");
+}
+
+// generate cards in html format
 function generateHtml(cardArray) {
   let output = "";
   for(const card of cardArray) {
@@ -122,29 +171,25 @@ function startGame() {
   $(".deck li").remove();
   // add cards to the board
   $(".deck").append(generateHtml(shuffle(cardArray)));
+  // set listeners on cards recreated for the game
   setEventListenersForAGame();
   moveCounter = 0;
-  $(".moves").html(moveCounter); // display moveCounter on board
-}
-
-function setEventListenersForAPage() {
-  // set event listeners on html elements that are no deleted on new game
-  $(".restart").click(function(event) {
-    if(confirm("Start new game?"))
-      startGame();
-  });
-}
-
-function drawStars(starCount) {
-  $(".stars li").remove();
-  for(; starCount > 0; starCount--)
-    $(".stars").append("<li><i class='fa fa-star'></i></li>");
+  // display move counter on board
+  $(".moves").html(moveCounter);
+  // display stars based on moves
+  drawStars(movesStars(moveCounter));
+  // reset the timer
+  startTime();
+  // display the timer for the first time in the game
+  updateTime();
+  // keep displaying the timer avery second
+  setInterval(updateTime,1000);
 }
 
 // initialize page and start the very first game
 $(function() {
-  setEventListenersForAPage();
-  startGame();
+    setEventListenersForAPage(); // no need to reinitialize them with each new game
+    startGame();
   }
 );
 
