@@ -17,7 +17,7 @@ The available card symbols are hardcoded in a cardArray. The array is shuffled b
 The selected card symbols are consecutively stored in openCardArray, and removed from top of it if the latest two cards do not match. The comparison of the lengths of the two arrays (cardArray and openCardArray), performed after opening of each even card, allows to determine the end of the game.
 The game logic is executed on each click of the card. In the meantime there is a timer code executed every second by setInterval() function. The timer is based on Date object provided by JS. It measures the time interval between begin of game and current time.
 
-# Dependencies
+## Dependencies
 The app uses icons from Font Awesome, jQuery, and Coda font.
 
 ## Responsiveness
