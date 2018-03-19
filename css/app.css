@@ -37,7 +37,7 @@ h1 {
  * Styles for the deck of cards
  */
 
- .deck {
+.deck {
     max-width: 640px;
     width: 100%;
     flex: 0 0 22%;
@@ -52,7 +52,7 @@ h1 {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
- }
+}
 
 .deck .card {
     height: 23px;
@@ -70,7 +70,7 @@ h1 {
     align-items: center;
     box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
     transition: 0.5s ease-in-out;
- }
+}
 
 
 .deck .card.open {
