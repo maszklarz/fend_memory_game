@@ -10,6 +10,7 @@ let clickCounter = 0;
 let moveCounter = 0;
 let startGameDate;
 let timeEndGame;
+let timerHandle;
 
 
 /*
@@ -94,6 +95,9 @@ function setEventListenersForAGame() {
       $(".moves").html(moveCounter);
       if(areLatestCardsTheSame(openCardArray)) {
         if(isGameOver()) {
+          // stop the timer
+          clearInterval(timerHandle);
+          // save end-of-game time to show it later in the delayed modal
           timeEndGame = getCurrentTimeInterval();
           // display end-of-game modal with slight delay
           // to let card animations finish
@@ -182,8 +186,8 @@ function startGame() {
   startTime();
   // display the timer for the first time in the game
   updateTime();
-  // keep displaying the timer avery second
-  setInterval(updateTime,1000);
+  // keep displaying the timer every second
+  timerHandle = setInterval(updateTime,1000);
 }
 
 // initialize page and start the very first game
