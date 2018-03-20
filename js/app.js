@@ -72,8 +72,11 @@ function isGameOver() {
 // these event listeners are on html elements that are not deleted on new game
 function setEventListenersForAPage() {
   $(".restart").click(function(event) {
-    if(confirm("Start new game?"))
+    if(confirm("Start new game?")) {
+      // stop the timer
+      clearInterval(timerHandle);
       startGame();
+    }
   });
 }
 
