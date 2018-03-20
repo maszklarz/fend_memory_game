@@ -47,7 +47,7 @@ function openCard(cardObject) {
 }
 
 function closeCard(cardObject) {
-    cardObject.removeClass("open show");
+  cardObject.removeClass("open show");
 }
 
 // assume openCardArray has even number of elements
@@ -86,6 +86,11 @@ function setEventListenersForAGame() {
     // ignore click on open card
     if ($(this).hasClass("open"))
       return;
+    // turn on the timer on the very first click
+    if(moveCounter === 0 && openCardArray.length === 0) {
+      startTime();
+      timerHandle = setInterval(updateTime, 1000);
+    }
     // at this point we know the click is valid and needs to be processed
     openCard($(this));
     addToOpenCardArray($(this).children(".fa")[0].classList[1]);
@@ -171,6 +176,8 @@ function generateHtml(cardArray) {
 }
 
 function startGame() {
+  // initially clear the list of opened cards
+  openCardArray.splice(0);
   // clear board
   $(".deck li").remove();
   // add cards to the board
@@ -182,12 +189,8 @@ function startGame() {
   $(".moves").html(moveCounter);
   // display stars based on moves
   drawStars(movesStars(moveCounter));
-  // reset the timer
-  startTime();
-  // display the timer for the first time in the game
-  updateTime();
-  // keep displaying the timer every second
-  timerHandle = setInterval(updateTime,1000);
+  // show initial zero timer
+  $(".time").html("00:00");
 }
 
 // initialize page and start the very first game
