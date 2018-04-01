@@ -1,8 +1,8 @@
 /*
  * Create a list that holds all of your cards
  */
-const cardArray = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb",
-               "fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
+const cardArray = ["bratki", "gozdzik", "gwiazda-betlejemska", "narcyzy", "niezapominajki", "stokrotki", "zajac", "margaretki",
+                   "bratki", "gozdzik", "gwiazda-betlejemska", "narcyzy", "niezapominajki", "stokrotki", "zajac", "margaretki"];
 let openCardArray = [];
 let latestOddCard;
 let latestEvenCard;
@@ -44,10 +44,16 @@ function removeLastTwoCardsFromOpenCardArray() {
 
 function openCard(cardObject) {
   cardObject.addClass("open show");
+
+  cardObject.children()[0].classList.add("card-open");
+  cardObject.children()[1].classList.remove("card-open");
 }
 
 function closeCard(cardObject) {
   cardObject.removeClass("open show");
+
+  cardObject.children()[0].classList.remove("card-open");
+  cardObject.children()[1].classList.add("card-open");
 }
 
 // assume openCardArray has even number of elements
@@ -82,7 +88,7 @@ function setEventListenersForAPage() {
 
 // these event listeners need to be recreated on each game
 function setEventListenersForAGame() {
-  $(".card").click(function(event) {
+  $(".card-outer").click(function(event) {
     // ignore click if unmatching cards are open
     if (latestEvenCard !== undefined)
       return;
@@ -171,8 +177,8 @@ function generateHtml(cardArray) {
   let output = "";
   for(const card of cardArray) {
     output = `${output}
-<li class="card">
-  <i class="fa ${card}"></i>
+<li class="card-outer">
+  <i class="fa ${card} card-front"><img src="img/${card}.jpg"></i><i class="card-back card-open"></i>
 </li>`;
   }
   return output;
