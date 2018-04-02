@@ -1,4 +1,4 @@
-# Memory Game Project
+# Memory Game Project, with Hall Of Fame
 This is the third project in Google Udacity FEND Nanodegree Scholarship.
 
 ## Author
@@ -10,6 +10,7 @@ Unzip the folders and run index.html.
 ## Play Rules
 Find matching consecutive cards by clicking them in the right order. Try to do it in as little moves as possible. One move is accounted for each even card open. You can only see two new open cards at a time, plus those already matched.
 The player starts with 3 stars rating. The rating gets decreased to 2 stars after 15 moves, and to 1 star after 25 moves.
+At the end of game the Hall of Fame is displayed. If player's result qualifies to the ten best scores, she is given a chance to enter her name. Note, the Hall of Fame data is stored locally.
 The game can be reset any time. The reset deletes the score, shuffles the cards, and starts the new game.
 
 ## Code Description
