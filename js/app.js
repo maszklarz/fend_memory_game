@@ -3,6 +3,8 @@
  */
 const cardArray = ["bratki", "gozdzik", "gwiazda-betlejemska", "narcyzy", "niezapominajki", "stokrotki", "zajac", "margaretki",
                    "bratki", "gozdzik", "gwiazda-betlejemska", "narcyzy", "niezapominajki", "stokrotki", "zajac", "margaretki"];
+const hallOfFame = [];
+const maxHallOfFameLength = 10;
 let openCardArray = [];
 let latestOddCard;
 let latestEvenCard;
@@ -11,6 +13,7 @@ let moveCounter = 0;
 let startGameDate;
 let timeEndGame;
 let timerHandle;
+let latestName = "Player";
 
 
 /*
@@ -22,16 +25,80 @@ let timerHandle;
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length, temporaryValue, randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+
+/*
+   Add new record to the proper position of hallOfFame[].
+   Return the position (0 based) or -1 if beyond maxHallOfFameLength.
+   Sort order: time (to seconds), moves.
+*/
+function addToHallOfFame(newName, newMoves, newTime) {
+  let ff = 0;
+  for(; ff<hallOfFame.length; ff++) {
+    if(newTime < hallOfFame[ff].time ||
+       (newTime === hallOfFame[ff].time && newMoves < hallOfFame[ff].moves)) {
+      break;
     }
-    return array;
+  }
+  if(ff < maxHallOfFameLength) {
+    hallOfFame.splice(ff, 0, {name: newName, moves: newMoves, time: newTime});
+  }
+  // cut off eleventh element if exists
+  hallOfFame.splice(maxHallOfFameLength, 1);
+  return (ff<maxHallOfFameLength ? ff : -1);
+}
+
+/*
+  Create a html string based on hallOfFame[]
+  Initially display edit box on editPos position.
+  Set eventHandler for Enter key to modify the name,
+    hide the display box
+    and show fixed string of the entered name.
+  Display the html string in the end of game modal.
+*/
+function completeHallOfFame(editPos) {
+  let out = "";
+  let posProperty = "";
+  let editWidget = "";
+  for(let ff=0; ff<hallOfFame.length; ff++) {
+    if(ff === editPos) {
+      posProperty = ' id="name-fixed" class="rec-name rec-hide"';
+      editWidget = '<input id="name-edit" class="rec-name" type="text" width="40%" value="'+ hallOfFame[ff].name +'"/>';
+    }
+    else {
+      posProperty = 'class="rec-name"';
+      editWidget = '';
+    }
+    out += `<li class="li-rec"><div class="record"><div ${posProperty}>${hallOfFame[ff].name}</div>${editWidget}
+ <div class="rec-time">${formatTimeInterval(hallOfFame[ff].time)}</div>
+ <div class="rec-moves">${hallOfFame[ff].moves}</div>
+ </div></li>`
+  }
+
+  // insert the html string to the end of game modal
+  $(".modal-hall-of-fame").html(out);
+
+  // Create the event handler for Enter key
+  $("#name-edit").keyup(function(event) {
+    if (event.keyCode === 13) {
+        hallOfFame[editPos].name = $("#name-edit").val();
+        $("#name-fixed").html(hallOfFame[editPos].name);
+        $("#name-edit").addClass("rec-hide");
+        $("#name-fixed").removeClass("rec-hide");
+        // keep the name to suggest it at the next round
+        latestName = hallOfFame[editPos].name;
+    }
+  });
 }
 
 function addToOpenCardArray(cardSymbol) {
@@ -84,6 +151,11 @@ function setEventListenersForAPage() {
       startGame();
     }
   });
+
+  $(".modal-close").click(function() {
+    $("#end-of-game-modal").hide("slow");
+    startGame();
+  });
 }
 
 // these event listeners need to be recreated on each game
@@ -111,14 +183,17 @@ function setEventListenersForAGame() {
         if(isGameOver()) {
           // stop the timer
           clearInterval(timerHandle);
-          // save end-of-game time to show it later in the delayed modal
-          timeEndGame = getCurrentTimeInterval();
-          // display end-of-game modal with slight delay
-          // to let card animations finish
-          setTimeout(function() {
-            alert("Congratulations! You won in "+  moveCounter + " moves. Your time is " + timeEndGame + ". Your star rating is " + movesStars(moveCounter) + ". Do you want to start a new game?");
-            startGame();
-          }, 1000);
+          // display end-of-game modal
+          let winnerPos = addToHallOfFame(latestName, moveCounter, timeEndGame);
+          // update winner name and display the new hall of fame
+          completeHallOfFame(winnerPos);
+          $(".end-of-game-modal-content p").html("Congratulations! You won in " +
+            moveCounter + " moves. Your time is " +
+            formatTimeInterval(timeEndGame) + ". Your star rating is " +
+            movesStars(moveCounter) + ". " +
+            (winnerPos < 0 ? "You did not make it to the Hall of Fame this time. Next time should be better!" : "You made it to the Hall of Fame! Enter your name and keep rolling! ")
+            + " Do you want to start a new game?");
+          $("#end-of-game-modal").show("slow");
         }
       }
       else {
@@ -150,15 +225,19 @@ function movesStars(moveCounter) {
 // Get time interval between begin of game and current time
 function getCurrentTimeInterval() {
   const now = new Date().getTime();
-  const timeDiff = now - startGameDate;
-  const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  return now - startGameDate;
+}
+
+function formatTimeInterval(timeDiff) {
+  const minutes = Math.floor((timeDiff % (60 * 60)) / 60);
+  const seconds = Math.floor(timeDiff % 60);
   return (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
 }
 
 // display the timer
 function updateTime() {
-  $(".time").html(getCurrentTimeInterval());
+  timeEndGame = Math.floor(getCurrentTimeInterval() / 1000);
+  $(".time").html( formatTimeInterval(timeEndGame) );
 }
 
 // reset the timer
@@ -205,6 +284,7 @@ function startGame() {
 // initialize page and start the very first game
 $(function() {
     setEventListenersForAPage(); // no need to reinitialize them with each new game
+    $("#end-of-game-modal").hide();
     startGame();
   }
 );

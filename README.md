@@ -18,7 +18,7 @@ The selected card symbols are consecutively stored in openCardArray, and removed
 The game logic is executed on each click of the card. In the meantime there is a timer code executed every second by setInterval() function. The timer is based on Date object provided by JS. It measures the time interval between begin of game and current time.
 
 ## Dependencies
-The app uses jQuery and Coda font.
+The app uses icons from Font Awesome, jQuery, and Coda font.
 
 ## Responsiveness
 The card deck has been designed to scale up to the viewport size. One media query has been implemented to handle the very small viewport sizes.
