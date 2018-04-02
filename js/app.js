@@ -15,7 +15,6 @@ let timeEndGame;
 let timerHandle;
 let latestName = "Player";
 
-
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -174,7 +173,7 @@ function setEventListenersForAGame() {
     }
     // at this point we know the click is valid and needs to be processed
     openCard($(this));
-    addToOpenCardArray($(this).children(".fa")[0].classList[1]);
+    addToOpenCardArray($(this).children()[0].classList[0]);
     if(openCardArray.length % 2 === 0) {
       moveCounter++;
       // display moveCounter on board
@@ -256,9 +255,9 @@ function generateHtml(cardArray) {
   let output = "";
   for(const card of cardArray) {
     output = `${output}
-<li class="card-outer">
-  <i class="fa ${card} card-front"><img src="img/${card}.jpg"></i><i class="card-back card-open"></i>
-</li>`;
+<div class="card-outer">
+  <i class="${card} card-front"><img src="img/${card}.jpg"></i><i class="card-back card-open"></i>
+</div>`;
   }
   return output;
 }
@@ -267,7 +266,7 @@ function startGame() {
   // initially clear the list of opened cards
   openCardArray.splice(0);
   // clear board
-  $(".deck li").remove();
+  $(".deck div").remove();
   // add cards to the board
   $(".deck").append(generateHtml(shuffle(cardArray)));
   // set listeners on cards recreated for the game

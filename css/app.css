@@ -10,8 +10,8 @@ html {
 
 html,
 body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vw;
     margin: 0;
     padding: 0;
 }
@@ -23,83 +23,15 @@ body {
 
 .container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
+    height: 120%;
 }
 
 h1 {
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
-}
-
-/*
- * Styles for the deck of cards
- */
-
-.deck {
-    max-width: 640px;
-    width: 100%;
-    flex: 0 0 22%;
-    padding: 8% 0;
-    padding: 32px;
-    margin: 2% 0;
-    margin: 0 0 3em;
-    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
-    border-radius: 10px;
-    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* An outer element containing card-fron and card-back */
-.card-outer {
-    position: relative;
-    flex: 0 0 21%;
-    padding: 10% 0;
-    margin: 2% 0;
-    list-style: none;    /* remove list dots */
-}
-
-/* A child of card-outer representing image to be remembered */
-.card-front {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    transform: rotateY(0.5turn);
-    backface-visibility: hidden;
-    transition: 0.5s ease-in-out;
-}
-
-/* A child of card-outer representing card back image */
-.card-back {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    width: 100%;
-    height: 100%;
-
-    background: #2e3d49;
-    border-radius: 8px;
-
-    transform: rotateY(0.5turn);
-    backface-visibility: hidden;
-    transition: 0.5s ease-in-out;
-}
-
-img {
-  width: inherit;
-  height: inherit;
-  border-radius: inherit;
-}
-
-.card-open {
-    transform: rotateY(0);
 }
 
 /*
@@ -146,6 +78,72 @@ img {
 }
 
 /*
+ * Styles for the deck of cards
+ */
+
+.deck {
+    max-width: 640px;
+    width: 100%;
+    height: 640px;
+    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
+    border-radius: 10px;
+    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+/* An outer element containing card-fron and card-back */
+.card-outer {
+    position: relative;
+    flex: 0 0 21%;
+    padding: 10% 0;
+    list-style: none;    /* remove list dots */
+    width: 20%;
+    height: 20%;
+}
+
+/* A child of card-outer representing image to be remembered */
+.card-front {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    transform: rotateY(0.5turn);
+    backface-visibility: hidden;
+    transition: 0.5s ease-in-out;
+}
+
+/* A child of card-outer representing card back image */
+.card-back {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    background: #2e3d49;
+    border-radius: 8px;
+
+    transform: rotateY(0.5turn);
+    backface-visibility: hidden;
+    transition: 0.5s ease-in-out;
+}
+
+img {
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+}
+
+.card-open {
+    transform: rotateY(0);
+}
+
+/*
     Styles for the end of game modal
 */
 /* The End-of-Game Modal (background) */
@@ -187,30 +185,29 @@ img {
 }
 
 .record {
-  display: flex;
-  flex-wrap: wrap;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .li-rec {
-  width: 100%;
+    width: 100%;
 }
 
 .rec-hide {
-  display: none;
+    display: none;
 }
 
 .rec-name {
-  width: 50%;
+    width: 50%;
 }
 
 .rec-time {
-  width: 35%;
+    width: 35%;
 }
 
 .rec-moves {
-  width: 15%;
+    width: 15%;
 }
-
 
 /* The Close Button */
 .modal-close {
