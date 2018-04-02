@@ -17,7 +17,7 @@ body {
 }
 
 body {
-    background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
+	background:  #ffffff url("../img/grass.jpg");
     font-family: 'Coda', cursive;
 }
 
@@ -32,6 +32,8 @@ body {
 h1 {
     font-family: 'Open Sans', sans-serif;
     font-weight: 300;
+	
+	background: rgba(255, 255, 255, 1);
 }
 
 /*
@@ -46,6 +48,8 @@ h1 {
     font-size: 32px;
     display: flex;
     flex-wrap: wrap;
+	
+	background: rgba(255, 255, 255, 1);
 }
 
 .score-panel .stars {
@@ -85,9 +89,8 @@ h1 {
     max-width: 640px;
     width: 100%;
     height: 640px;
-    background: linear-gradient(160deg, #02ccba 0%, #aa7ecd 100%);
+	background: #ffffff url("../img/grass.jpg");
     border-radius: 10px;
-    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;

@@ -256,7 +256,7 @@ function generateHtml(cardArray) {
   for(const card of cardArray) {
     output = `${output}
 <div class="card-outer">
-  <i class="${card} card-front"><img src="img/${card}.jpg"></i><i class="card-back card-open"></i>
+  <i class="${card} card-front"><img src="img/${card}.jpg"></i><i class="card-back card-open"><img src="img/seed.jpg"></i>
 </div>`;
   }
   return output;
